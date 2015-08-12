@@ -1,2 +1,2 @@
 # Mobigation
-Mobile responsive navigation menu. Clone any menu into a single <b>button</b> drop down menu.
+Mobile responsive navigation menu. It's simple, clone any menu into a single button drop down menu.
