@@ -46,6 +46,7 @@
 			scrollToElement : false, // true or false, clicking menu links scroll to page element
 			scrollSpeed     : 500, // scrollbar speed
 			closeIcon       : 'x', // text or img
+			hover           : false, // open menu item on mouseover
 			opened          : null, // callback function
 			closed          : null // callback function
         }, options);
@@ -95,69 +96,102 @@
 			
 		}
 		
-		$('#' + settings.panelWrap + ' li a').each(function() {
+		if(settings.hover === true){
 			
-			var $this = $(this);
-			
-			$this.click(function(e) {
+			$('#' + settings.panelWrap + ' li').each(function() {
 				
-				e.stopPropagation();
+				var $this = $(this);
 				
-				var target = $this.attr('href');
-				
-				if(target.indexOf('#') === 0 && target.length > 1){
+				$this.on('mouseover mouseleave',function(e){
 					
-					e.preventDefault();
+					var subMenu = $this.children('ul').eq(0);
+					subMenu.stop();
 					
-					if(target !== ''){
+					if(subMenu.length > 0){
 						
-						$('html,body').animate({
-							scrollTop: $(target).offset().top
-						}, settings.scrollSpeed, settings.easing, function(){
+						if(e.type === 'mouseover'){
+							
+							subMenu.slideDown();
+							
+						}else{
+							
+							subMenu.slideUp();
+							
+						}
+						
+					}
+					
+				});
+					
+			});
+			
+		}else{
+			
+			$('#' + settings.panelWrap + ' li a').each(function() {
+				
+				var $this = $(this);
+				
+				$this.click(function(e) {
+					
+					e.stopPropagation();
+					
+					var target = $this.attr('href');
+					
+					if(target.indexOf('#') === 0 && target.length > 1){
+						
+						e.preventDefault();
+						
+						if(target !== ''){
+							
+							$('html,body').animate({
+								scrollTop: $(target).offset().top
+							}, settings.scrollSpeed, settings.easing, function(){
+								
+								methods.close.call(this);
+								
+							});
+							
+						}else{
 							
 							methods.close.call(this);
 							
-						});
-						
-					}else{
-						
-						methods.close.call(this);
-						
-					}
-					
-					//return false;
-				}else{
-					
-					if(target.indexOf('#') === 0 && $this.siblings('ul').length === 1){
-						
-						var subMenu = $this.parent().children('ul').eq(0);
-						if(subMenu.length > 0){
-							e.preventDefault();
-							if(subMenu.is(':visible')){
-								
-								subMenu.slideUp();
-								
-							}else{
-								
-								subMenu.slideDown();
-								
-							}
 						}
 						
+						//return false;
 					}else{
 						
-						methods.close.call(this);
+						if(target.indexOf('#') === 0 && $this.siblings('ul').length === 1){
 							
+							var subMenu = $this.parent().children('ul').eq(0);
+							if(subMenu.length > 0){
+								e.preventDefault();
+								if(subMenu.is(':visible')){
+									
+									subMenu.slideUp();
+									
+								}else{
+									
+									subMenu.slideDown();
+									
+								}
+							}
+							
+						}else{
+							
+							methods.close.call(this);
+								
+						}
+						
 					}
 					
-				}
+				});
 				
 			});
 			
-		});
+		}
         
     },
-    open : function(args) { 
+    open : function() { 
 		
 		animateObj[settings.direction] = 0;
 		
@@ -165,7 +199,7 @@
 		
 		if(settings.mode === 'shift' && settings.direction !== 'bottom'){
 			
-			$('#' + settings.panelWrap + '-body-wrap').prepend('<div id="mobigation-mask"></div>')
+			$('#' + settings.panelWrap + '-body-wrap').prepend('<div id="mobigation-mask"></div>');
 			
 			var wOffset;
 			
@@ -201,7 +235,7 @@
 		});
 		
     },
-	close : function(args) { 
+	close : function() { 
 		if(settings.direction === 'bottom'){
 			
 			animateObj[settings.direction] = ($(window).outerHeight() * -1);
@@ -244,7 +278,7 @@
 		});
 		
     },
-	update : function(args) {
+	update : function() {
 		
 		$('#'+settings.panelWrap+'-menu').show();
 		$('body').css('overflow','visible');
@@ -268,7 +302,7 @@
 		methods.close.call(this);
 		
 	},
-	destory : function(args) {
+	destory : function() {
 		
 		$(settings.buttonParent).find('#'+settings.panelWrap+'-menu').remove();
 		$('#' + settings.panelWrap).remove();
