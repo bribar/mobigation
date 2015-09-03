@@ -111,7 +111,7 @@
 						
 						if(e.type === 'mouseover'){
 							
-							methods.close.call(this);
+							subMenu.slideDown();
 							
 						}else{
 							
